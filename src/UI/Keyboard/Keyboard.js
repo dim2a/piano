@@ -15,10 +15,15 @@ class Keyboard extends Component {
     document.removeEventListener('keydown', this.buttonHandler);
   }
 
-  buttonHandler(e) {
+  buttonHandler = e => {
     e.preventDefault();
-    console.log(e);
-  }
+    const { keys } = this.props;
+    const btn = keys.filter(key => key.key === e.key);
+    console.log(btn[0]);
+    if (btn[0]) {
+      this.sound(btn[0].name);
+    }
+  };
 
   sound(name) {
     console.log('sound');
@@ -28,19 +33,20 @@ class Keyboard extends Component {
 
   clickHandler = e => {
     const name = e.target.getAttribute('value');
-
     this.sound(name);
   };
 
   renderKeys(keys) {
-    return keys.map(({ id, name, height }) => (
+    return keys.map(({ id, name, height, key }) => (
       <Key
         key={id}
         id={id}
         value={name}
         height={height}
         onClick={this.clickHandler}
-      ></Key>
+      >
+        {key}
+      </Key>
     ));
   }
 
@@ -60,6 +66,7 @@ const Key = styled.div`
   height: ${({ height }) => height * 200}px;
   width: 40px;
   border: 1px solid black;
+  color: ${({ height }) => (height === 0.8 ? '#fff' : '#000')}
   transform: translate(${({ id }) => id * 40}px, 100px);
   background-color: ${({ height }) => (height === 0.8 ? '#000' : '#fff')};
   &:hover {
