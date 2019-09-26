@@ -1,31 +1,54 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import Tone from 'tone';
 
-const Keyboard = props => {
-  const clickHandler = e => {
-    const name = e.target.getAttribute('value');
+class Keyboard extends Component {
+  constructor(props) {
+    super(props);
+    this.sound = this.sound.bind(this);
+  }
+  componentDidMount() {
+    document.addEventListener('keydown', this.buttonHandler);
+  }
 
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.buttonHandler);
+  }
+
+  buttonHandler(e) {
+    e.preventDefault();
+    console.log(e);
+  }
+
+  sound(name) {
+    console.log('sound');
     const synth = new Tone.Synth().toMaster();
     synth.triggerAttackRelease(name, '8n');
+  }
+
+  clickHandler = e => {
+    const name = e.target.getAttribute('value');
+
+    this.sound(name);
   };
 
-  const renderKeys = keys => {
+  renderKeys(keys) {
     return keys.map(({ id, name, height }) => (
       <Key
         key={id}
         id={id}
         value={name}
         height={height}
-        onClick={clickHandler}
+        onClick={this.clickHandler}
       ></Key>
     ));
-  };
+  }
 
-  const { keys } = props;
-  console.log(keys);
-  return <KeyboardTag>{renderKeys(keys)}</KeyboardTag>;
-};
+  render() {
+    const { keys } = this.props;
+    return <KeyboardTag>{this.renderKeys(keys)}</KeyboardTag>;
+  }
+}
 
 const KeyboardTag = styled.div`
   position: relative;
