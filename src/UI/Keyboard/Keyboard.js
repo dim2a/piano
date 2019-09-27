@@ -3,30 +3,38 @@ import styled from 'styled-components';
 import Tone from 'tone';
 
 class Keyboard extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.sound = this.sound.bind(this);
-  //   this.positionCalc = this.positionCalc.bind(this);
-  // }
   componentDidMount() {
-    document.addEventListener('keydown', this.buttonHandler);
+    document.addEventListener('keydown', this.buttonHandlerDown);
+    document.addEventListener('keyup', this.buttonHandlerUp);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.buttonHandler);
   }
 
-  buttonHandler = e => {
+  buttonHandlerUp = e => {
     e.preventDefault();
     const { keys } = this.props;
     const btn = keys.filter(key => key.key === e.key);
     if (btn[0]) {
+      const el = document.getElementById(`${btn[0].id}`);
+      el.style.transform = `translate(${btn[0].position * 40}px, 100px)`;
+    }
+  };
+
+  buttonHandlerDown = e => {
+    e.preventDefault();
+    const { keys } = this.props;
+    const btn = keys.filter(key => key.key === e.key);
+
+    if (btn[0]) {
+      const el = document.getElementById(`${btn[0].id}`);
+      el.style.transform = `translate(${btn[0].position * 40}px, 105px)`;
       this.sound(btn[0].name);
     }
   };
 
   sound(name) {
-    console.log('sound');
     const synth = new Tone.Synth().toMaster();
     synth.triggerAttackRelease(name, '8n');
   }
@@ -37,12 +45,9 @@ class Keyboard extends Component {
   };
 
   renderKeys(keys) {
-    // const whiteKeys = keys.filter(key => key.height === 1);
-    // const blackKeys = keys.filter(key => key.height === 0.8);
-    // console.log('white: ', whiteKeys);
-    // console.log('black: ', blackKeys);
-    return keys.map(({ position, name, height, key }) => (
+    return keys.map(({ id, position, name, height, key }) => (
       <Key
+        id={id}
         key={position}
         position={position}
         value={name}
@@ -53,10 +58,6 @@ class Keyboard extends Component {
       </Key>
     ));
   }
-
-  // positionCalc = (id, height) => {
-  //   return id * 40;
-  // };
 
   render() {
     const { keys } = this.props;
@@ -75,6 +76,8 @@ const Key = styled.div`
   justify-content: center;
   align-items: flex-end;
   padding-bottom: 5px;
+  
+
   height: ${({ height }) => height * 200}px;
   width: ${({ height }) => (height === 0.8 ? '30' : '40')}px;
   border: 1px solid black;
@@ -88,10 +91,10 @@ const Key = styled.div`
     cursor: pointer;
   }
   &:active {
+    box-shadow: inset 1px 1px 7px 0px rgba(0, 0, 0, 1),
+    inset -1px -1px 17px 0px rgba(0, 0, 0, 1), 1px 0px gray, -1px 0px gray;
     transform: translate(${({ position }) => position * 40}px, 105px);
   }
 `;
 
 export default Keyboard;
-//transform: translate(${({ id, height }) => height === 0.8 ? ((id-1) * 50) + 25 : ((id-1) * 50)+25}px, 100px);
-//transform: translate(${({ id }) => id * 40}px, 100px);
