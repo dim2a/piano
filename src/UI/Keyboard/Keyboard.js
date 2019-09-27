@@ -9,7 +9,8 @@ class Keyboard extends Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.buttonHandler);
+    document.removeEventListener('keydown', this.buttonHandlerDown);
+    document.removeEventListener('keyup', this.buttonHandlerUp);
   }
 
   buttonHandlerUp = e => {
@@ -23,7 +24,7 @@ class Keyboard extends Component {
   };
 
   buttonHandlerDown = e => {
-    //e.preventDefault();
+    e.preventDefault();
     const { keys } = this.props;
     const btn = keys.filter(key => key.key === e.key);
 
@@ -61,11 +62,7 @@ class Keyboard extends Component {
 
   render() {
     const { keys } = this.props;
-    return (
-      <KeyboardTag>
-        <div>{this.renderKeys(keys)}</div>
-      </KeyboardTag>
-    );
+    return <KeyboardTag>{this.renderKeys(keys)}</KeyboardTag>;
   }
 }
 
