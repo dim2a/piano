@@ -23,7 +23,7 @@ class Keyboard extends Component {
   };
 
   buttonHandlerDown = e => {
-    e.preventDefault();
+    //e.preventDefault();
     const { keys } = this.props;
     const btn = keys.filter(key => key.key === e.key);
 
@@ -61,14 +61,19 @@ class Keyboard extends Component {
 
   render() {
     const { keys } = this.props;
-    return <KeyboardTag>{this.renderKeys(keys)}</KeyboardTag>;
+    return (
+      <KeyboardTag>
+        <div>{this.renderKeys(keys)}</div>
+      </KeyboardTag>
+    );
   }
 }
 
 const KeyboardTag = styled.div`
   position: relative;
-  width: 800px;
+  max-width: 800px;
   margin: 100px auto;
+  text-align: center;
 `;
 const Key = styled.div`
   position: absolute;
@@ -76,8 +81,6 @@ const Key = styled.div`
   justify-content: center;
   align-items: flex-end;
   padding-bottom: 5px;
-  
-
   height: ${({ height }) => height * 200}px;
   width: ${({ height }) => (height === 0.8 ? '30' : '40')}px;
   border: 1px solid black;
